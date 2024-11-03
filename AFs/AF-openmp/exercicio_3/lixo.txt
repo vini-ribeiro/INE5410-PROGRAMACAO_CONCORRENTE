@@ -1,0 +1,4 @@
+cc -Wall -Werror -std=c11 -pthread -D__USE_XOPEN2K8 -D_POSIX_C_SOURCE=200809L -fopenmp -g -O0 -I. -fsanitize=address -fsanitize=undefined -MT build/main.o -MMD -MP -MF build/main.Td -o build/main.o -c main.c
+mv -f build/main.Td build/main.d && touch build/main.o
+cc -Wall -Werror -std=c11 -pthread -D__USE_XOPEN2K8 -D_POSIX_C_SOURCE=200809L -fopenmp -g -O0 -I. -fsanitize=address -fsanitize=undefined  -o build/program build/main.o -lm
+cp build/program program
