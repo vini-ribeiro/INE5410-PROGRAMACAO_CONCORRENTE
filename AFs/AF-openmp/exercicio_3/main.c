@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     int tamanho = atoi(argv[1]);
 
     double *data = malloc(tamanho * sizeof(double));
-    srand(0);
+    srand(time(NULL));
 
     for (int i = 0; i < tamanho; ++i)
         data[i] = 100000 * (rand() / (double) RAND_MAX);
