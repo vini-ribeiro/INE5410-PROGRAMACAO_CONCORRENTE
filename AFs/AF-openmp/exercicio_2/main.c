@@ -3,20 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-void init_matrix(double *m, int rows, int columns) {
+/*
+Como as variáveis i, j e k foram declaradas fora da região paralela, temos que torna-las privadas para cada thread, tendo em vista que seu valor
+será modificado no decorrer da execução de cada thread. A segunda região paralela foi removida pois seu uso não aumentou a performance dos cálculos
+*/
 
+void init_matrix(double *m, int rows, int columns) {
 #pragma omp parallel for schedule(guided)
     for (int i = 0; i < rows; ++i)
         for (int j = 0; j < columns; ++j)
             m[i * columns + j] = i + j;
 }
 
-/*
-Como as variáveis i, j e k foram declaradas fora da região paralela, temos que torna-las privadas para cada thread, tendo em vista que seu valor
-será modificado no decorrer da execução de cada thread. A segunda região paralela foi removida pois seu uso não aumentou a performance dos cálculos
-*/
 void mult_matrix(double *out, double *left, double *right, int rows_left, int cols_left, int cols_right) {
-
     int i, j, k;
 #pragma omp parallel for schedule(dynamic, 1) private(i, j, k)
     for (i = 0; i < rows_left; ++i) {

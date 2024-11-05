@@ -7,6 +7,8 @@
 double standard_deviation(double *data, int size) {
 
     double avg = 0;
+    // data tem que ser compartilhado, mas avg não. Usamos o reduction para somar todas as instâncias privadas de todas as threads em avg declarada
+    // anteriormente
 #pragma omp parallel shared(data)
 #pragma omp for schedule(static) reduction(+ : avg)
     for (int i = 0; i < size; ++i)
@@ -14,6 +16,7 @@ double standard_deviation(double *data, int size) {
     avg /= size;
 
     double sd = 0;
+    // fazemos a mesma coisa com sd
 #pragma omp parallel shared(data, avg)
 #pragma omp for schedule(static) reduction(+ : sd)
     for (int i = 0; i < size; ++i)
