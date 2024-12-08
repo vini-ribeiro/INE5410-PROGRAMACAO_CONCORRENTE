@@ -14,9 +14,9 @@ from Salao import Salao
 N_ATRACOES = 3  # número que representa o número de atrações existentes (>1)
 N_PESSOAS = 6  # número que representa o número total de pessoas que irão ingressar na atração (>0)
 N_VAGAS = 3  # número máximo de pessoas simultâneas em uma única atração
-PERMANENCIA = 10  # tempo de cada pessoa na atração
-MAX_INTERVALO = 4  # um número que representa o intervalo máximo de tempo entre a chegada de duas pessoas quaisquer na fila (>0)
-SEMENTE = 1  # número inteiro que representa a semente a ser utilizada para o gerador de números aleatórios (>=0)
+PERMANENCIA = 5  # tempo de cada pessoa na atração
+MAX_INTERVALO = 2  # um número que representa o intervalo máximo de tempo entre a chegada de duas pessoas quaisquer na fila (>0)
+SEMENTE = 10  # número inteiro que representa a semente a ser utilizada para o gerador de números aleatórios (>=0)
 UNID_TEMPO = 2  # número que representa o tempo, em milissegundos, correspondente a uma unidade de tempo na simulação (>0)
 # --------------- constantes ------------------------
 
@@ -75,7 +75,7 @@ def processa_pessoa(pessoa: Pessoa):
     fila.liberar_um_lugar_salao()
 
 
-def NasaExperiences():
+def nasa_experiences():
     global estatiscas_exp, tempo_total_simulacao
 
     print("[NASA] Simulacao iniciada.")
@@ -138,4 +138,7 @@ if __name__ == "__main__":
     MAX_INTERVALO = MAX_INTERVALO * UNID_TEMPO
 
     random.seed(SEMENTE)
-    NasaExperiences()
+
+    nasaExp = Thread(target=nasa_experiences)
+    nasaExp.start()
+    nasaExp.join()
