@@ -10,6 +10,7 @@ class Salao:
         self._experiencia = None
         self._capacidade = capacidade
 
+    # --------------- funções para o fluxo de pessoas ---------------
     def vazio(self):
         with self.lock:
             return len(self._pessoas) == 0
@@ -28,6 +29,9 @@ class Salao:
             self._pessoas.remove(pessoa)
             print(f'[{pessoa}] Saiu da NASA Experiences (quantidade = {len(self._pessoas)}).')
 
+    # --------------- funções para o fluxo de pessoas ---------------
+
+    # --------------- acesso aos atributos ---------------
     @property
     def experiencia(self):
         return self._experiencia
@@ -41,3 +45,5 @@ class Salao:
     @property
     def capacidade(self):
         return self._capacidade
+
+    # --------------- acesso aos atributos ---------------

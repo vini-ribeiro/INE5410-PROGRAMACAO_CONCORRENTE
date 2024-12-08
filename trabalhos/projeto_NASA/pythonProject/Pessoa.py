@@ -6,6 +6,7 @@ class Pessoa:
         self._nome = nome
         self._experiencia = exp
 
+    # --------------- acesso aos atributos ---------------
     @property
     def nome(self):
         return self._nome
@@ -22,6 +23,9 @@ class Pessoa:
     def experiencia(self, experiencia):
         self._experiencia = experiencia
 
+    # --------------- acesso aos atributos ---------------
+
+    # --------------- funções auxiliares ---------------
     @staticmethod
     def curtir_experiencia(tempo: int):
         sleep(tempo)
@@ -38,3 +42,5 @@ class Pessoa:
 
     def __str__(self):
         return f'{self._nome} / {self._experiencia}'
+
+    # --------------- funções auxiliares ---------------
