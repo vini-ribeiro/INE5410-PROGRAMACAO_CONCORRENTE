@@ -24,7 +24,7 @@ UNID_TEMPO = 2       # número que representa o tempo, em milissegundos, corresp
 
 # --------------- variáveis globais ------------------------
 fila = Fila()                   # objeto global da fila
-salao = Salao(N_VAGAS)          # objeto global do salão (onde ocorre o evento)
+salao = None                    # objeto global do salão (onde ocorre o evento)
 estatiscas_exp = dict()         # guarda as estatístidas de cada experiência str : [int, int]
 tempo_total_simulacao = 0.0       # armazeno o tempo decorrido da simulação
 tempo_total_de_pausa_exp = 0.0    # total de tempo de simulação pausada
@@ -114,7 +114,7 @@ def nasa_experiences():
     print("\nTempo médio de espera:")
     for e in experiencias:
         if estatiscas_exp[e][0] != 0:
-            print(f'Experiência {e}: {estatiscas_exp[e][1] / estatiscas_exp[e][0]: .2f}')
+            print(f'Experiência {e}: {(estatiscas_exp[e][1] / estatiscas_exp[e][0] * 1000.0): .2f}')
         else:
             print(f'Experiência {e}: 0.00')
 
@@ -139,7 +139,8 @@ if __name__ == "__main__":
     MAX_INTERVALO = float(MAX_INTERVALO * UNID_TEMPO)
 
     random.seed(SEMENTE)
-
+    salao = Salao(N_VAGAS)
+   
     nasaExp = Thread(target=nasa_experiences)
     nasaExp.start()
     nasaExp.join()
