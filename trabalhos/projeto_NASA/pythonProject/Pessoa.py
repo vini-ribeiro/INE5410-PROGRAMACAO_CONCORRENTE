@@ -27,7 +27,7 @@ class Pessoa:
 
     # --------------- funções auxiliares ---------------
     @staticmethod
-    def curtir_experiencia(tempo: int):
+    def curtir_experiencia(tempo: float):
         sleep(tempo)
 
     def __eq__(self, other):

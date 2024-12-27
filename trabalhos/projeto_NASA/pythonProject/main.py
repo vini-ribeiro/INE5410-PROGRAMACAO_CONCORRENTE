@@ -1,8 +1,8 @@
 import random
 import sys
-from asyncio import Condition, sleep
+from asyncio import sleep
 
-from random import randint, shuffle
+from random import randint
 from threading import Thread
 from time import time, sleep
 
@@ -10,14 +10,15 @@ from Fila import Fila
 from Pessoa import Pessoa
 from Salao import Salao
 
+# Valores modelos para as constantes
 # --------------- constantes ------------------------
-N_ATRACOES = 3  # número que representa o número de atrações existentes (>1)
-N_PESSOAS = 6  # número que representa o número total de pessoas que irão ingressar na atração (>0)
-N_VAGAS = 3  # número máximo de pessoas simultâneas em uma única atração
-PERMANENCIA = 5  # tempo de cada pessoa na atração
-MAX_INTERVALO = 2  # um número que representa o intervalo máximo de tempo entre a chegada de duas pessoas quaisquer na fila (>0)
-SEMENTE = 10  # número inteiro que representa a semente a ser utilizada para o gerador de números aleatórios (>=0)
-UNID_TEMPO = 2  # número que representa o tempo, em milissegundos, correspondente a uma unidade de tempo na simulação (>0)
+N_ATRACOES = 3       # número que representa o número de atrações existentes (>1)
+N_PESSOAS = 6        # número que representa o número total de pessoas que irão ingressar na atração (>0)
+N_VAGAS = 3          # número máximo de pessoas simultâneas em uma única atração
+PERMANENCIA = 5.0    # tempo de cada pessoa na atração
+MAX_INTERVALO = 2.0  # um número que representa o intervalo máximo de tempo entre a chegada de duas pessoas quaisquer na fila (>0)
+SEMENTE = 10         # número inteiro que representa a semente a ser utilizada para o gerador de números aleatórios (>=0)
+UNID_TEMPO = 2       # número que representa o tempo, em milissegundos, correspondente a uma unidade de tempo na simulação (>0)
 # --------------- constantes ------------------------
 
 
@@ -25,9 +26,9 @@ UNID_TEMPO = 2  # número que representa o tempo, em milissegundos, corresponden
 fila = Fila()                   # objeto global da fila
 salao = Salao(N_VAGAS)          # objeto global do salão (onde ocorre o evento)
 estatiscas_exp = dict()         # guarda as estatístidas de cada experiência str : [int, int]
-tempo_total_simulacao = 0       # armazeno o tempo decorrido da simulação
-tempo_total_de_pausa_exp = 0    # total de tempo de simulação pausada
-tempo_parcial_de_pausa_exp = 0  # utilitário para auxiliar no cálculo total de total de tempo de simulação pausada
+tempo_total_simulacao = 0.0       # armazeno o tempo decorrido da simulação
+tempo_total_de_pausa_exp = 0.0    # total de tempo de simulação pausada
+tempo_parcial_de_pausa_exp = 0.0  # utilitário para auxiliar no cálculo total de tempo de simulação pausada
 # --------------- variáveis globais ------------------------
 
 
@@ -58,7 +59,8 @@ def processa_pessoa(pessoa: Pessoa):
     # salão vazio indica que a experiência esteja pausada
     # o segundo argumento garante que a primeiro pessoa a entrar não suje a medição
     if salao.vazio() and tempo_parcial_de_pausa_exp != 0.0:
-        tempo_total_de_pausa_exp += time() - tempo_parcial_de_pausa_exp
+        tempo_total_de_pausa_exp += (time() - tempo_parcial_de_pausa_exp)
+        tempo_parcial_de_pausa_exp = 0.0    # reinicializa a variável
 
     salao.entrar(pessoa)                    # entra no salão
     fila.sair()                             # sai da fila
@@ -83,7 +85,7 @@ def nasa_experiences():
     # cria as experiências e atribui a um objeto do tipo pessoa
     experiencias = ["AT-" + str(i + 1) for i in range(N_ATRACOES)]
     for experiencia in experiencias:
-        estatiscas_exp[experiencia] = [0, 0]
+        estatiscas_exp[experiencia] = [0, 0.0]
 
     # criação de uma lista de pessoas
     pessoas = list()
@@ -92,22 +94,23 @@ def nasa_experiences():
         estatiscas_exp[experiencias[n_exp]][0] += 1
         pessoas.append(Pessoa("Pessoa " + str(i + 1), experiencias[n_exp]))
 
-    [print(pessoas[i]) for i in range(N_PESSOAS)] # retirar esta linha
-
     # cria as threads das pessoas
     threads_pessoas = [Thread(target=processa_pessoa, args=(pessoas[i],)) for i in range(N_PESSOAS)]
 
+    # começa a criar as threads e já pega o tempo total da simulação
     tempo_total_simulacao = time()
     for tp in threads_pessoas:
         tp.start()
-        sleep(randint(1, MAX_INTERVALO))
+        sleep(randint(1, int(MAX_INTERVALO))/1000.0)
 
+    # join das threads
     for tp in threads_pessoas:
         tp.join()
     tempo_total_simulacao = time() - tempo_total_simulacao
 
     print("[NASA] Simulacao finalizada.")
 
+    # cálculo e impressão das estatísticas
     print("\nTempo médio de espera:")
     for e in experiencias:
         if estatiscas_exp[e][0] != 0:
@@ -118,24 +121,22 @@ def nasa_experiences():
     print(f'\nTaxa de ocupacao: {(tempo_total_simulacao - tempo_total_de_pausa_exp) / tempo_total_simulacao: .2f}')
 
 if __name__ == "__main__":
-    # global N_ATRACOES, N_PESSOAS, N_VAGAS, PERMANENCIA, MAX_INTERVALO, SEMENTE, UNID_TEMPO
+    if len(sys.argv) < 8:
+        print(
+            "Uso: python3 main.py <N_ATRACOES>(>1) <N_PESSOAS>(>0) <N_VAGAS>(>0) <PERMANENCIA>(>0) <MAX_INTERVALO>(>0) <SEMENTE>(>=0) <UNID_TEMPO>(>0)")
+        sys.exit(1)
 
-    # if len(sys.argv) < 8:
-    #     print(
-    #         "Uso: python3 nasa.py <N_ATRACOES> <N_PESSOAS> <N_VAGAS> <PERMANENCIA> <MAX_INTERVALO> <SEMENTE> <UNID_TEMPO>")
-    #     sys.exit(1)
-    #
-    # # Leitura dos argumentos da linha de comando
-    # N_ATRACOES = int(sys.argv[1])
-    # N_PESSOAS = int(sys.argv[2])
-    # N_VAGAS = int(sys.argv[3])
-    # PERMANENCIA = int(sys.argv[4])
-    # MAX_INTERVALO = int(sys.argv[5])
-    # SEMENTE = int(sys.argv[6])
-    # UNID_TEMPO = sys.argv[7]
+    # Leitura dos argumentos da linha de comando
+    N_ATRACOES = int(sys.argv[1])
+    N_PESSOAS = int(sys.argv[2])
+    N_VAGAS = int(sys.argv[3])
+    PERMANENCIA = float(sys.argv[4])/1000.0
+    MAX_INTERVALO = float(sys.argv[5])
+    SEMENTE = int(sys.argv[6])
+    UNID_TEMPO = float(sys.argv[7])
 
-    PERMANENCIA = PERMANENCIA * UNID_TEMPO
-    MAX_INTERVALO = MAX_INTERVALO * UNID_TEMPO
+    PERMANENCIA = float(PERMANENCIA * UNID_TEMPO)
+    MAX_INTERVALO = float(MAX_INTERVALO * UNID_TEMPO)
 
     random.seed(SEMENTE)
 

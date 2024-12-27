@@ -5,14 +5,17 @@
  *
  * Este programa simula a movimentação de robôs em uma arena em Marte,
  * seguindo as regras descritas abaixo:
- * - Robôs com IDs menores têm prioridade de movimentação sobre robôs com IDs maiores.
- * - Quando um robô sem energia tem robôs vizinhos, ele rouba energia do robô com o menor ID.
- * - O roubo de energia ocorre apenas quando o robô vizinho tem pelo menos 2 unidades de energia,
- *   garantindo que o robô roubado não fique sem energia.
- * - Um robô perde energia ao se movimentar, e o movimento depende da energia disponível.
+ * - Robôs com IDs menores têm prioridade de movimentação sobre robôs com IDs
+ * maiores.
+ * - Quando um robô sem energia tem robôs vizinhos, ele rouba energia do robô
+ * com o menor ID.
+ * - O roubo de energia ocorre apenas quando o robô vizinho tem pelo menos 2
+ * unidades de energia, garantindo que o robô roubado não fique sem energia.
+ * - Um robô perde energia ao se movimentar, e o movimento depende da energia
+ * disponível.
  *
- * A tarefa do código é modificar o comportamento para que o processamento de cada robô
- * ocorra de forma concorrente.
+ * A tarefa do código é modificar o comportamento para que o processamento de
+ * cada robô ocorra de forma concorrente.
  */
 
 #include <pthread.h>
